@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ error: "Invalid password" });
 
-        // Access token expires in 2 minutes
+        // Access token expires in 3 minutes
     const accessTokenExpiry = 3 * 60; // seconds
     const accessToken = jwt.sign({ userId: user._id }, ACCESS_TOKEN_SECRET, { expiresIn: `${accessTokenExpiry}s` });
     const refreshToken = jwt.sign({ userId: user._id }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
     refreshTokens.push(refreshToken);
 
     res.cookie("refreshToken", refreshToken, { httpOnly: true, path: "/api/auth/refresh-token" });
-    res.json({ accessToken,expiresIn: accessTokenExpiry });
+    res.json({ accessToken, expiresIn: accessTokenExpiry });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
