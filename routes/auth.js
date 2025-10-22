@@ -37,13 +37,14 @@ router.post("/login", async (req, res) => {
 
         // Access token expires in 3 minutes
     const accessTokenExpiry = 3 * 60; // seconds
+    const expiresAt = new Date(Date.now() + accessTokenExpiry * 1000); // timestamp in ISO format
     const accessToken = jwt.sign({ userId: user._id }, ACCESS_TOKEN_SECRET, { expiresIn: `${accessTokenExpiry}s` });
     const refreshToken = jwt.sign({ userId: user._id }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
     refreshTokens.push(refreshToken);
 
     res.cookie("refreshToken", refreshToken, { httpOnly: true, path: "/api/auth/refresh-token" });
-    res.json({ accessToken, expiresIn: accessTokenExpiry });
+    res.json({ accessToken, expiresIn: expiresAt.toISOString() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
