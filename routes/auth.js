@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
     refreshTokens.push(refreshToken);
 
     res.cookie("refreshToken", refreshToken, { httpOnly: true, path: "/api/auth/refresh-token" });
-    res.json({ accessToken, expiresIn: expiresAt.toISOString() });
+    res.json({ accessToken, refreshToken, expiresIn: expiresAt.toISOString() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
